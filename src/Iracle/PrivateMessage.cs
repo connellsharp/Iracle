@@ -1,6 +1,6 @@
 namespace Iracle
 {
-    internal class PrivateMessage
+    public class PrivateMessage
     {
         public Identity From { get; set; }
         public string Channel { get; set; }

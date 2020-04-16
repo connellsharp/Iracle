@@ -1,6 +1,6 @@
 ﻿namespace Iracle
 {
-    internal class BotCommandContext
+    public class BotCommandContext
     {
         public string Channel { get; set; }
         public Identity From { get; set; }

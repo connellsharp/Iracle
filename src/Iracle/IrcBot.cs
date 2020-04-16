@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Iracle
 {
-    internal class IrcBot : IDisposable
+    public class IrcBot : IDisposable
     {
         private readonly IrcCommunicator _communicator;
         private readonly IBot _bot;

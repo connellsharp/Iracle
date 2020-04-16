@@ -2,7 +2,7 @@
 
 namespace Iracle
 {
-    internal class IrcCommunicator : IDisposable
+    public class IrcCommunicator : IDisposable
     {
         private readonly ILineCommunicator _lineCommunicator;
 
@@ -86,9 +86,9 @@ namespace Iracle
         }
     }
 
-    internal delegate void MessageReceivedHandler(PrivateMessage message);
+    public delegate void MessageReceivedHandler(PrivateMessage message);
 
-    internal delegate void PingReceivedHandler(PingMessage message);
+    public delegate void PingReceivedHandler(PingMessage message);
 
-    internal delegate void ConnectionReadyHandler();
+    public delegate void ConnectionReadyHandler();
 }

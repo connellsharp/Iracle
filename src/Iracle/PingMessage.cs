@@ -1,6 +1,6 @@
 namespace Iracle
 {
-    internal class PingMessage
+    public class PingMessage
     {
         public string Message { get; set; }
     }

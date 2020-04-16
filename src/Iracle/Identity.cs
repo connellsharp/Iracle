@@ -1,6 +1,6 @@
 ﻿namespace Iracle
 {
-    internal class Identity
+    public class Identity
     {
         public Identity(string userString)
         {
