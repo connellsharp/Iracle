@@ -1,0 +1,9 @@
+<Project>
+    <PropertyGroup>
+        <VersionPrefix>0.1.0</VersionPrefix>
+        <VersionSuffix>alpha001</VersionSuffix>
+        
+        <Authors>Connell Watkins</Authors>
+        <Copyright>Copyright © Connell Watkins 2020</Copyright>
+    </PropertyGroup>
+</Project>
