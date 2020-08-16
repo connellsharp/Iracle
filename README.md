@@ -27,13 +27,15 @@ internal class SlapBot : IBot
 ```csharp
 var communicator = new TcpLineCommunicator("irc.example.com", 6667);
 
-var settings = new IrcBotSettings 
+var settings = new IrcConnectionSettings 
 {
+    Password = "password",
     Nick = "SlapBot",
     User = "SlapBot", 
     Channels = new[] { "#general" }
 };
 
-var ircBot = new IrcBot(communicator, new SlapBot(), settings);
-await ircBot.ConnectAsync();
+var ircConnection = new IrcConnection(communicator, settings);
+ircConnection.AddBot(new SlapBot());
+await ircConnection.ConnectAsync();
 ```
