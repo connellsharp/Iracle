@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Iracle
 {
@@ -24,13 +25,19 @@ namespace Iracle
 
         public bool Ready { get; private set; }
 
-        public void Connect()
+        public async Task ConnectAsync(CancellationToken ct = default)
         {
-            _communicator.SetNick(_settings.Nick);
-            _communicator.SetUser(_settings.User);
+            if(_settings.Password != null)
+                _communicator.SetPassword(_settings.Password);
+
+            if(_settings.Nick != null)
+                _communicator.SetNick(_settings.Nick);
+
+            if(_settings.User != null)
+                _communicator.SetUser(_settings.User);
             
             while(Ready == false)
-                Thread.Sleep(50);
+                await Task.Delay(50, ct);
 
             foreach(var channel in _settings.Channels)
                 _communicator.JoinChannel(channel);
@@ -48,16 +55,13 @@ namespace Iracle
 
         private void OnMessageReceived(PrivateMessage message)
         {
-            if(!message.Message.StartsWith("!"))
-                return;
-
             var commandContext = new BotCommandContext 
             {
                 Channel = message.Channel,
                 From = message.From
             };
 
-            _bot.InvokeCommandAsync(commandContext, message.Message.Substring(1))
+            _bot.InvokeCommandAsync(commandContext, message.Message)
                 .ContinueWith(task => OnCommandResponse(message, task.Result));
         }
 

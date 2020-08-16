@@ -35,5 +35,5 @@ var settings = new IrcBotSettings
 };
 
 var ircBot = new IrcBot(communicator, new SlapBot(), settings);
-ircBot.Connect();
+await ircBot.ConnectAsync();
 ```

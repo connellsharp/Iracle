@@ -12,6 +12,11 @@ namespace Iracle
             _lineCommunicator.LineReceived += OnLineReceived;
         }
 
+        public void SetPassword(string password)
+        {
+            _lineCommunicator.WriteLine("PASS " + password);
+        }
+
         public void SetNick(string nick)
         {
             _lineCommunicator.WriteLine("NICK " + nick);
@@ -34,7 +39,7 @@ namespace Iracle
 
         internal void SendMessage(string channel, string message)
         {
-            _lineCommunicator.WriteLine("PRIVMSG " + channel + " " + message);
+            _lineCommunicator.WriteLine("PRIVMSG " + channel + " :" + message);
         }
 
         public event PingReceivedHandler PingReceived;
