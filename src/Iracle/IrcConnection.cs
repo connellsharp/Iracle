@@ -73,23 +73,18 @@ namespace Iracle
 
         private void OnMessageReceived(PrivateMessage message)
         {
-            var commandContext = new BotCommandContext
+            var command = new BotCommand
             {
                 Channel = message.Channel,
-                From = message.From
+                From = message.From,
+                Message = message.Message
             };
 
             foreach (var bot in _bots)
             {
-                bot.InvokeCommandAsync(commandContext, message.Message)
-                    .ContinueWith(task => OnCommandResponse(message, task.Result));
+                bot.HandleAsync(command); // fire and forget
+                // TODO handle async exceptions ?
             }
-        }
-
-        private void OnCommandResponse(PrivateMessage originalMessage, string response)
-        {
-            if (response != null)
-                _communicator.SendMessage(originalMessage.Channel, response);
         }
 
         private void OnPingReceived(PingMessage message)

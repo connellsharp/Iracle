@@ -7,18 +7,39 @@ Iracle provides an easy way to create IRC bots in C#.
 ```csharp
 internal class SlapBot : IBot
 {
-    public async Task<string> InvokeCommandAsync(BotCommandContext context, string command)
+    public async Task HandleAsync(BotCommand command)
     {
-        if(command.StartsWith("!slap "))
+        if(command.Message.StartsWith("!slap "))
         {
             var user = command.Substring(6);
-            return $"{context.Identity.User} slaps {user} around a bit with a large trout";
+            
+            EventHappened.Invoke(new BotEvent
+            {
+                Channel = command.Channel,
+                Message = $"{command.From.User} slaps {user} around a bit with a large trout"
+            });
+        }
+    }
+
+    public event Action<BotEvent> EventHappened;
+}
+```
+
+Or a simple responder.
+
+```csharp
+internal class SlapResponder : IResponder
+{
+    public async Task<string> HandleAsync(BotCommand command)
+    {
+        if(command.Message.StartsWith("!slap "))
+        {
+            var user = command.Message.Substring(6);
+            return $"{command.From.User} slaps {user} around a bit with a large trout";
         }
 
         return null;
     }
-
-    public event Action<BotEvent> EventHappened;
 }
 ```
 
@@ -36,6 +57,6 @@ var settings = new IrcConnectionSettings
 };
 
 var ircConnection = new IrcConnection(communicator, settings);
-ircConnection.AddBot(new SlapBot());
+ircConnection.AddBot(new ResponderBot(new SlapResponder()));
 await ircConnection.ConnectAsync();
 ```

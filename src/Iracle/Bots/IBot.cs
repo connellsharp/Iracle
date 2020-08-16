@@ -5,7 +5,7 @@ namespace Iracle
 {
     public interface IBot
     {
-        Task<string> InvokeCommandAsync(BotCommandContext context, string command);
+        Task HandleAsync(BotCommand command);
 
         event Action<BotEvent> EventHappened;
     }
