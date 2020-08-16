@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 
 namespace Iracle
 {
-    public class IrcBot : IDisposable
+    public class IrcConnection : IDisposable
     {
         private readonly IrcCommunicator _communicator;
         private readonly IBot _bot;
-        private readonly IrcBotSettings _settings;
+        private readonly IrcConnectionSettings _settings;
 
-        public IrcBot(IrcCommunicator communicator, IBot bot, IrcBotSettings settings)
+        public IrcConnection(IrcCommunicator communicator, IBot bot, IrcConnectionSettings settings)
         {
             _communicator = communicator;
             _communicator.ConnectionReady += OnConnectionReady;

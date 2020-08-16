@@ -6,4 +6,6 @@ namespace Iracle
         
         event LineReceived LineReceived;
     }
+
+    public delegate void LineReceived(string line);
 }

@@ -5,8 +5,6 @@ using System.Threading;
 
 namespace Iracle
 {
-    public delegate void LineReceived(string line);
-
     public class TcpLineCommunicator : ILineCommunicator, IDisposable
     {
         private StreamReader _reader;

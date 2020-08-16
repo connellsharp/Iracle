@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Iracle
 {
-    public class IrcBotSettings
+    public class IrcConnectionSettings
     {
         public string Password { get; set; }
         public string Nick { get; set; }

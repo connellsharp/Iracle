@@ -2,6 +2,9 @@
 
 namespace Iracle
 {
+    /// <summary>
+    /// Encapsulates raw IRC protocol communication and exposes common methods and events.
+    /// </summary>
     public class IrcCommunicator : IDisposable
     {
         private readonly ILineCommunicator _lineCommunicator;
