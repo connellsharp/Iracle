@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace Iracle
 {
-    public class IrcConnection : IBotConnection, IDisposable
+    public class IrcConnection : BotConnection
     {
         private readonly IrcCommunicator _communicator;
         private readonly IrcConnectionSettings _settings;
-        private readonly IList<IBot> _bots;
 
         public IrcConnection(ILineCommunicator lineCommunicator, IrcConnectionSettings settings)
             : this(new IrcCommunicator(lineCommunicator), settings)
@@ -19,8 +15,6 @@ namespace Iracle
 
         public IrcConnection(IrcCommunicator communicator, IrcConnectionSettings settings)
         {
-            _bots = new List<IBot>();
-
             _communicator = communicator;
             _communicator.ConnectionReady += OnConnectionReady;
             _communicator.MessageReceived += OnMessageReceived;
@@ -31,7 +25,7 @@ namespace Iracle
 
         public bool Ready { get; private set; }
 
-        public async Task ConnectAsync(CancellationToken ct = default)
+        public override async Task ConnectAsync(CancellationToken ct = default)
         {
             if (_settings.Password != null)
                 _communicator.SetPassword(_settings.Password);
@@ -54,19 +48,7 @@ namespace Iracle
             Ready = true;
         }
 
-        public void AddBot(IBot bot)
-        {
-            _bots.Add(bot);
-            bot.EventHappened += OnBotEventHappened;
-        }
-
-        public void RemoveBot(IBot bot)
-        {
-            _bots.Remove(bot);
-            bot.EventHappened -= OnBotEventHappened;
-        }
-
-        private void OnBotEventHappened(BotEvent evnt)
+        protected override void OnBotEventHappened(BotEvent evnt)
         {
             _communicator.SendMessage(evnt.Channel, evnt.Message);
         }
@@ -80,11 +62,8 @@ namespace Iracle
                 Message = message.Message
             };
 
-            foreach (var bot in _bots)
-            {
-                bot.HandleAsync(command); // fire and forget
-                // TODO handle async exceptions ?
-            }
+            SendCommandToBotsAsync(command); // fire and forget
+            // TODO handle async exceptions ?
         }
 
         private void OnPingReceived(PingMessage message)
@@ -92,16 +71,13 @@ namespace Iracle
             _communicator.Pong(message.Message);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _communicator.ConnectionReady -= OnConnectionReady;
             _communicator.MessageReceived -= OnMessageReceived;
             _communicator.PingReceived -= OnPingReceived;
 
-            foreach (var bot in _bots.ToArray())
-            {
-                RemoveBot(bot);
-            }
+            base.Dispose();
         }
     }
 }
