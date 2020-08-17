@@ -7,54 +7,76 @@ namespace Iracle
     /// <summary>
     /// Encapsulates raw IRC protocol communication and exposes IRC-specific methods and events.
     /// </summary>
-    public class IrcCommunicator : IDisposable
+    public class IrcClient : IDisposable
     {
         private readonly ILineCommunicator _lineCommunicator;
 
-        public IrcCommunicator(ILineCommunicator lineCommunicator)
+        public IrcClient(ILineCommunicator lineCommunicator)
         {
             _lineCommunicator = lineCommunicator;
             _lineCommunicator.LineReceived += OnLineReceived;
         }
 
-        public Task ConnectAsync(CancellationToken ct = default)
+        public bool IsLoggedIn { get; private set; }
+
+        public async Task LoginAsync(IIrcLoginSettings loginSettings, CancellationToken ct = default)
         {
-            return _lineCommunicator.ConnectAsync(ct);
+            await _lineCommunicator.ConnectAsync(ct);
+
+            if (loginSettings.Password != null)
+                await SetPasswordAsync(loginSettings.Password);
+
+            if (loginSettings.Nick != null)
+                await SetNickAsync(loginSettings.Nick);
+
+            if (loginSettings.User != null)
+                await SetUserAsync(loginSettings.User);
+
+            while (IsLoggedIn == false)
+                await Task.Delay(50, ct);
+
+            foreach (var channel in loginSettings.Channels)
+                await JoinChannelAsync(channel);
         }
 
-        public Task SetPassword(string password)
+        private void OnLoggedIn()
+        {
+            IsLoggedIn = true;
+        }
+
+        private Task SetPasswordAsync(string password)
         {
             return _lineCommunicator.WriteLineAsync("PASS " + password);
         }
 
-        public Task SetNick(string nick)
+        private Task SetNickAsync(string nick)
         {
             return _lineCommunicator.WriteLineAsync("NICK " + nick);
         }
 
-        public Task SetUser(string user)
+        private Task SetUserAsync(string user)
         {
             return _lineCommunicator.WriteLineAsync("USER " + user + " 0 * :" + user);
         }
 
-        public Task JoinChannel(string channel)
+        public Task JoinChannelAsync(string channel)
         {
             return _lineCommunicator.WriteLineAsync("JOIN " + channel);
         }
 
-        public Task Pong(string message)
+        private Task PongAsync(string message)
         {
             return _lineCommunicator.WriteLineAsync("PONG " + message);
         }
 
-        public Task SendMessage(string channel, string message)
+        public Task SendMessageAsync(string channel, string message)
         {
             return _lineCommunicator.WriteLineAsync("PRIVMSG " + channel + " :" + message);
         }
 
         public event PingReceivedHandler PingReceived;
 
-        public event ConnectionReadyHandler ConnectionReady;
+        public event LoggedInHandler LoggedIn;
 
         public event MessageReceivedHandler MessageReceived;
 
@@ -77,7 +99,7 @@ namespace Iracle
             
             if(args[1] == "001")
             {
-                ConnectionReady?.Invoke();
+                LoggedIn?.Invoke();
                 return;
             }
             
@@ -105,5 +127,5 @@ namespace Iracle
 
     public delegate void PingReceivedHandler(PingMessage message);
 
-    public delegate void ConnectionReadyHandler();
+    public delegate void LoggedInHandler();
 }

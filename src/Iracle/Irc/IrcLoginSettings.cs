@@ -2,7 +2,15 @@
 
 namespace Iracle
 {
-    public class IrcConnectionSettings
+    public interface IIrcLoginSettings 
+    {
+        string Password { get; }
+        string Nick { get; }
+        string User { get; }
+        IEnumerable<string> Channels { get; }
+    }
+
+    public class IrcLoginSettings : IIrcLoginSettings
     {
         public string Password { get; set; }
         public string Nick { get; set; }

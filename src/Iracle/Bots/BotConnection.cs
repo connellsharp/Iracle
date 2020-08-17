@@ -17,7 +17,22 @@ namespace Iracle
             _aggregateBot.EventHappened += OnBotEventHappened;
         }
 
-        protected abstract void OnBotEventHappened(BotEvent evnt);
+        private void OnBotEventHappened(BotEvent evnt)
+        {
+            HandleBotEventAsync(evnt).ContinueWith(PublishUnhandledException);
+        }
+
+        protected void PublishUnhandledException(Task task)
+        {
+            if (task.IsFaulted)
+            {
+                ExceptionThrown?.Invoke(task.Exception);
+            }
+        }
+
+        public event UnhandledExceptionEvent ExceptionThrown;
+
+        protected abstract Task HandleBotEventAsync(BotEvent evnt);
 
         protected Task SendCommandToBotsAsync(BotCommand command)
         {
@@ -42,4 +57,6 @@ namespace Iracle
             _aggregateBot.RemoveAll();
         }
     }
+
+    public delegate void UnhandledExceptionEvent(Exception exception);
 }
