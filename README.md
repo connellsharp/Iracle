@@ -46,17 +46,17 @@ internal class SlapResponder : IResponder
 ### And connect it to IRC
 
 ```csharp
-var communicator = new TcpLineCommunicator("irc.example.com", 6667);
-
-var settings = new IrcConnectionSettings 
+var settings = new IrcSettings 
 {
+    Host = "irc.example.com",
+    Port = 6667,
     Password = "password",
     Nick = "SlapBot",
     User = "SlapBot", 
     Channels = new[] { "#general" }
 };
 
-var ircConnection = new IrcConnection(communicator, settings);
-ircConnection.AddBot(new ResponderBot(new SlapResponder()));
-await ircConnection.ConnectAsync();
+var connection = new IrcBotConnection(settings);
+connection.AddBot(new ResponderBot(new SlapResponder()));
+await connection.ConnectAsync();
 ```
