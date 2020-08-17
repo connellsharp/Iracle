@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Iracle
 {
     /// <summary>
-    /// Encapsulates raw IRC protocol communication and exposes common methods and events.
+    /// Encapsulates raw IRC protocol communication and exposes IRC-specific methods and events.
     /// </summary>
     public class IrcCommunicator : IDisposable
     {
@@ -13,6 +15,11 @@ namespace Iracle
         {
             _lineCommunicator = lineCommunicator;
             _lineCommunicator.LineReceived += OnLineReceived;
+        }
+
+        public Task ConnectAsync(CancellationToken ct = default)
+        {
+            return _lineCommunicator.ConnectAsync(ct);
         }
 
         public void SetPassword(string password)
@@ -40,7 +47,7 @@ namespace Iracle
             _lineCommunicator.WriteLine("PONG " + message);
         }
 
-        internal void SendMessage(string channel, string message)
+        public void SendMessage(string channel, string message)
         {
             _lineCommunicator.WriteLine("PRIVMSG " + channel + " :" + message);
         }

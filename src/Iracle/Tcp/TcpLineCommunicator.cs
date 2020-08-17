@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Iracle
 {
@@ -18,13 +19,13 @@ namespace Iracle
         {
             _host = host;
             _port = port;
-
-            Start();
         }
 
-        private void Start()
+        public async Task ConnectAsync(CancellationToken ct = default)
         {
-            var client = new TcpClient(_host, _port);
+            var client = new TcpClient();
+            await client.ConnectAsync(_host, _port);
+
             var stream = client.GetStream();
             _reader = new StreamReader(stream);
             _writer = new StreamWriter(stream);

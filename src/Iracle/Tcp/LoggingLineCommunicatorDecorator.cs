@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Iracle
 {
@@ -12,18 +14,25 @@ namespace Iracle
             _inner.LineReceived += InnerLineReceived;
         }
 
-        private void InnerLineReceived(string line)
+        public async Task ConnectAsync(CancellationToken ct = default)
         {
-            Console.WriteLine("<- " + line);
-            LineReceived?.Invoke(line);
+            Console.WriteLine("->> Connecting...");
+            await _inner.ConnectAsync();
+            Console.WriteLine("<<- Connected.");
         }
-
-        public event LineReceived LineReceived;
 
         public void WriteLine(string line)
         {
             Console.WriteLine("-> " + line);
             _inner.WriteLine(line);
+        }
+
+        public event LineReceived LineReceived;
+
+        private void InnerLineReceived(string line)
+        {
+            Console.WriteLine("<- " + line);
+            LineReceived?.Invoke(line);
         }
 
         public void Dispose()

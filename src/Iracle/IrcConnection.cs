@@ -27,6 +27,8 @@ namespace Iracle
 
         public override async Task ConnectAsync(CancellationToken ct = default)
         {
+            await _communicator.ConnectAsync(ct);
+
             if (_settings.Password != null)
                 _communicator.SetPassword(_settings.Password);
 
