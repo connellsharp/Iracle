@@ -33,10 +33,10 @@ namespace Iracle
             new Thread(Run).Start();
         }
 
-        public void WriteLine(string line)
+        public async Task WriteLineAsync(string line, CancellationToken ct = default)
         {
-            _writer.WriteLine(line);
-            _writer.Flush();
+            await _writer.WriteLineAsync(line);
+            await _writer.FlushAsync();
         }
 
         public event LineReceived LineReceived;

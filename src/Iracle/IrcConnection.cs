@@ -30,19 +30,19 @@ namespace Iracle
             await _communicator.ConnectAsync(ct);
 
             if (_settings.Password != null)
-                _communicator.SetPassword(_settings.Password);
+                await _communicator.SetPassword(_settings.Password);
 
             if (_settings.Nick != null)
-                _communicator.SetNick(_settings.Nick);
+                await _communicator.SetNick(_settings.Nick);
 
             if (_settings.User != null)
-                _communicator.SetUser(_settings.User);
+                await _communicator.SetUser(_settings.User);
 
             while (Ready == false)
                 await Task.Delay(50, ct);
 
             foreach (var channel in _settings.Channels)
-                _communicator.JoinChannel(channel);
+                await _communicator.JoinChannel(channel);
         }
 
         private void OnConnectionReady()
@@ -70,7 +70,8 @@ namespace Iracle
 
         private void OnPingReceived(PingMessage message)
         {
-            _communicator.Pong(message.Message);
+            _communicator.Pong(message.Message); // fire and forget
+            // TODO handle async exceptions ?
         }
 
         public override void Dispose()

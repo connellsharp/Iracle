@@ -22,34 +22,34 @@ namespace Iracle
             return _lineCommunicator.ConnectAsync(ct);
         }
 
-        public void SetPassword(string password)
+        public Task SetPassword(string password)
         {
-            _lineCommunicator.WriteLine("PASS " + password);
+            return _lineCommunicator.WriteLineAsync("PASS " + password);
         }
 
-        public void SetNick(string nick)
+        public Task SetNick(string nick)
         {
-            _lineCommunicator.WriteLine("NICK " + nick);
+            return _lineCommunicator.WriteLineAsync("NICK " + nick);
         }
 
-        public void SetUser(string user)
+        public Task SetUser(string user)
         {
-            _lineCommunicator.WriteLine("USER " + user + " 0 * :" + user);
+            return _lineCommunicator.WriteLineAsync("USER " + user + " 0 * :" + user);
         }
 
-        public void JoinChannel(string channel)
+        public Task JoinChannel(string channel)
         {
-            _lineCommunicator.WriteLine("JOIN " + channel);
+            return _lineCommunicator.WriteLineAsync("JOIN " + channel);
         }
 
-        public void Pong(string message)
+        public Task Pong(string message)
         {
-            _lineCommunicator.WriteLine("PONG " + message);
+            return _lineCommunicator.WriteLineAsync("PONG " + message);
         }
 
-        public void SendMessage(string channel, string message)
+        public Task SendMessage(string channel, string message)
         {
-            _lineCommunicator.WriteLine("PRIVMSG " + channel + " :" + message);
+            return _lineCommunicator.WriteLineAsync("PRIVMSG " + channel + " :" + message);
         }
 
         public event PingReceivedHandler PingReceived;

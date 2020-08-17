@@ -7,7 +7,7 @@ namespace Iracle
     {
         Task ConnectAsync(CancellationToken ct = default);
         
-        void WriteLine(string line);
+        Task WriteLineAsync(string line, CancellationToken ct = default);
         
         event LineReceived LineReceived;
     }

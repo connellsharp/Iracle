@@ -21,10 +21,10 @@ namespace Iracle
             Console.WriteLine("<<- Connected.");
         }
 
-        public void WriteLine(string line)
+        public Task WriteLineAsync(string line, CancellationToken ct = default)
         {
             Console.WriteLine("-> " + line);
-            _inner.WriteLine(line);
+            return _inner.WriteLineAsync(line, ct);
         }
 
         public event LineReceived LineReceived;
