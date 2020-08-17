@@ -8,23 +8,30 @@ namespace Iracle
 {
     public class TcpLineCommunicator : ILineCommunicator, IDisposable
     {
+        private readonly ITcpConnectionSettings _settings;
         private StreamReader _reader;
         private StreamWriter _writer;
-        private readonly string _host;
-        private readonly int _port;
 
         public bool Connected { get; private set; }
 
         public TcpLineCommunicator(string host, int port)
         {
-            _host = host;
-            _port = port;
+            _settings = new TcpConnectionSettings
+            {
+                Host = host,
+                Port = port
+            };
+        }
+
+        public TcpLineCommunicator(ITcpConnectionSettings settings)
+        {
+            _settings = settings;
         }
 
         public async Task ConnectAsync(CancellationToken ct = default)
         {
             var client = new TcpClient();
-            await client.ConnectAsync(_host, _port);
+            await client.ConnectAsync(_settings.Host, _settings.Port);
 
             var stream = client.GetStream();
             _reader = new StreamReader(stream);
