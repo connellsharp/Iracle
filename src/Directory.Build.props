@@ -5,5 +5,7 @@
         
         <Authors>Connell Watkins</Authors>
         <Copyright>Copyright © Connell Watkins 2020</Copyright>
+        <PackageProjectUrl>https://github.com/connellw/Iricle</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/connellw/Iricle/blob/master/LICENSE.txt</PackageLicenseUrl>
     </PropertyGroup>
 </Project>
