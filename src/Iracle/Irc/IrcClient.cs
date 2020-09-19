@@ -39,11 +39,6 @@ namespace Iracle
                 await JoinChannelAsync(channel);
         }
 
-        private void OnLoggedIn()
-        {
-            IsLoggedIn = true;
-        }
-
         private Task SetPasswordAsync(string password)
         {
             return _lineCommunicator.WriteLineAsync("PASS " + password);
@@ -99,6 +94,7 @@ namespace Iracle
             
             if(args[1] == "001")
             {
+                IsLoggedIn = true;
                 LoggedIn?.Invoke();
                 return;
             }
